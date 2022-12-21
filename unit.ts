@@ -46,8 +46,8 @@ interface Unit<P> {
 
 
 interface Terran extends Unit<TERRAN_PRODUCTION_BASE> {
-    repairAble: boolean;
-    healAble: boolean;
+    repairable: boolean;
+    healable: boolean;
 }
 
 

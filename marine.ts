@@ -1,4 +1,6 @@
-import { Terran, Position  } from './unit';
+import { Position, Terran } from './unit';
+import { EngineeringBayUpgrade } from './engineering-bay';
+
 
 export class Marine implements Terran {
 
@@ -12,8 +14,8 @@ export class Marine implements Terran {
     public speed = 4;
     public attackSpeed = 15;
     public readonly attackRange = 4;
-    public readonly healAble = true;
-    public readonly repairAble = false;
+    public readonly healable = true;
+    public readonly repairable = false;
     public readonly productionBase = "BARRACKS";
 
     constructor(
@@ -23,21 +25,21 @@ export class Marine implements Terran {
     }
 
     public move(location: Position): void {
-        // spped ?
+        // speed ?
         this.position.positionX = location.positionX;
         this.position.positionY = location.positionY;
     }
 
     public getGroundAttackPower(): number {
-        return this.groundAttack;
+        return this.groundAttack + EngineeringBayUpgrade.status().getMarinesInfantryWeapons();
     }
 
     public getAirAttackPower(): number {
-        return this.airAttack;
+        return this.airAttack + EngineeringBayUpgrade.status().getMarinesInfantryWeapons();
     }
 
     public getDefense(): number {
-        return this.defense;
+        return this.defense + EngineeringBayUpgrade.status().getMarinesInfantryArmor();
     }
 
     public getOffensiveDistance(): number {
@@ -48,7 +50,7 @@ export class Marine implements Terran {
     public beAttacked(damage: number): number {
         const result = (this.hitPoints + this.getDefense()) - damage;
 
-        // 유닛 사망
+        // 유닛 사망 ==> 객체 제거?
         if (result <= 0) {
             return -1;
         }
@@ -56,21 +58,18 @@ export class Marine implements Terran {
         return result;
     }
 
-
     public useStimPack(): void {
 
-        if (this.hitPoints > 10) {
+        console.log("Ah! Yeah! ");
 
-            console.log("Ah! Yeah! ");
+        this.hitPoints -= 10;
+        this.speed += 2;
+        this.attackSpeed += 5;
 
-            this.hitPoints -= 10;
-            this.speed += 2;
-            this.attackSpeed += 5;
+        // setTimeout(() => {
+        //     this.speed -= 2;
+        //     this.attackSpeed -= 5
+        // }, 13500);
 
-            // setTimeout(() => {
-            //     this.speed -= 2;
-            //     this.attackSpeed -= 5
-            // }, 13500);
-        }
     }
 }
