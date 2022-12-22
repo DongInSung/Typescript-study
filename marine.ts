@@ -1,5 +1,6 @@
 import { Position, Terran } from './unit';
 import { EngineeringBayUpgrade } from './engineering-bay';
+import { AcademyUpgrade } from './academy';
 
 
 export class Marine implements Terran {
@@ -43,33 +44,41 @@ export class Marine implements Terran {
     }
 
     public getOffensiveDistance(): number {
+        if (AcademyUpgrade.status().getShells()) {
+            return this.attackRange + 1;
+        }
         return this.attackRange;
     }
 
 
-    public beAttacked(damage: number): number {
+    public beAttacked(damage: number): void {
         const result = (this.hitPoints + this.getDefense()) - damage;
 
         // 유닛 사망 ==> 객체 제거?
         if (result <= 0) {
-            return -1;
+            this.hitPoints = 0;
+            return;
         }
+
+        this.hitPoints = result;
         console.log(`HP : ${this.hitPoints}`);
-        return result;
+        return;
     }
 
     public useStimPack(): void {
 
-        console.log("Ah! Yeah! ");
+        if (this.hitPoints > 10 && AcademyUpgrade.status().getStimPack()) {
+            console.log("Ah! Yeah! ");
 
-        this.hitPoints -= 10;
-        this.speed += 2;
-        this.attackSpeed += 5;
+            this.hitPoints -= 10;
+            this.speed += 2;
+            this.attackSpeed += 5;
 
-        // setTimeout(() => {
-        //     this.speed -= 2;
-        //     this.attackSpeed -= 5
-        // }, 13500);
-
+            // setTimeout(() => {
+            //     this.speed -= 2;
+            //     this.attackSpeed -= 5
+            // }, 13500);
+        }
     }
+    
 }
